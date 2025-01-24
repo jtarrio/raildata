@@ -59,7 +59,7 @@ func getTrainSchedule(ctx context.Context, station string) error {
 
 func displayTrainScheduleEntry(entry *raildata.TrainScheduleEntry) {
 	fmt.Printf("%s ", entry.DepartureTime.Format(time.DateTime))
-	util.HtmlColors(&entry.Color.Foreground, &entry.Color.Background).Print(entry.Line.Name)
+	util.HtmlColors(&entry.Color.Foreground, &entry.Color.Background).Printf("%s (%s)", entry.LineName, entry.Line.Abbreviation)
 	if entry.Status != nil {
 		fmt.Printf(" %s", *entry.Status)
 	}

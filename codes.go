@@ -81,7 +81,7 @@ var StopCodes = []StopCode{
 	{Code: "A", Description: "Arrival time"},
 	{Code: "S", Description: "Normal Stop"},
 	{Code: "S*", Description: "Normal stop. May leave up to 3 minutes early"},
-	{Code: "LS", Description: "Leaves 1 minute before scheduled time"},
+	{Code: "LV", Description: "Leaves 1 minute after scheduled time"},
 	{Code: "L", Description: "Train can leave before scheduled departure. Will hold for connections"},
 	{Code: "H", Description: "Will hold for connection unless authorize by dispatcher"},
 	{Code: "D", Description: "Stop to discharge passengers only. May leave ahead of schedule"},

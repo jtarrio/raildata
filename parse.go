@@ -120,21 +120,21 @@ func ParseStationInfo(input *api.StationInfo) *GetTrainScheduleResponse {
 func ParseScheduleInfo(input *api.ScheduleInfo, station *Station) *TrainScheduleEntry {
 	destination := strUnquote(input.DESTINATION)
 	scheduleEntry := &TrainScheduleEntry{
-		DepartureTime:      *strToLocalTime(input.SCHED_DEP_DATE, dateTimeFormat),
-		Destination:        destination,
-		DestinationStation: strToStation("", destination),
-		Track:              strToTrackName(input.TRACK, station),
-		Line:               *strToLine(input.LINECODE, input.LINE),
-		TrainId:            input.TRAIN_ID,
-		ConnectingTrainId:  strToPtr(input.CONNECTING_TRAIN_ID),
-		Status:             strToPtr(input.STATUS),
-		Delay:              strToDurationSeconds(input.SEC_LATE),
-		LastUpdated:        strToLocalTime(input.LAST_MODIFIED, dateTimeFormat),
-		Color:              *strsToColorSet(input.FORECOLOR, input.BACKCOLOR, input.SHADOWCOLOR),
-		GpsLocation:        strsToLocation(input.GPSLONGITUDE, input.GPSLATITUDE),
-		GpsTime:            strToLocalTime(input.GPSTIME, dateTimeFormat),
-		StationPosition:    GetStationPosition(input.STATION_POSITION),
-		InlineMessage:      strToPtr(input.INLINEMSG),
+		DepartureTime:     *strToLocalTime(input.SCHED_DEP_DATE, dateTimeFormat),
+		Destination:       destination,
+		Track:             strToTrackName(input.TRACK, station),
+		Line:              *strToLine(input.LINECODE, input.LINE),
+		LineName:          input.LINE,
+		TrainId:           input.TRAIN_ID,
+		ConnectingTrainId: strToPtr(input.CONNECTING_TRAIN_ID),
+		Status:            strToPtr(input.STATUS),
+		Delay:             strToDurationSeconds(input.SEC_LATE),
+		LastUpdated:       strToLocalTime(input.LAST_MODIFIED, dateTimeFormat),
+		Color:             *strsToColorSet(input.FORECOLOR, input.BACKCOLOR, input.SHADOWCOLOR),
+		GpsLocation:       strsToLocation(input.GPSLONGITUDE, input.GPSLATITUDE),
+		GpsTime:           strToLocalTime(input.GPSTIME, dateTimeFormat),
+		StationPosition:   GetStationPosition(input.STATION_POSITION),
+		InlineMessage:     strToPtr(input.INLINEMSG),
 	}
 	for _, item := range input.CAPACITY {
 		scheduleEntry.Capacity = append(scheduleEntry.Capacity, *ParseCapacityList(&item))

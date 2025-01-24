@@ -221,12 +221,12 @@ type TrainScheduleEntry struct {
 	DepartureTime time.Time
 	// Destination contains the destination name.
 	Destination string
-	// DestinationStation contains the destination station, if it could be determined from the destination name.
-	DestinationStation *Station
 	// Track contains the name of the track this train will leave from, if known.
 	Track *string
 	// Line contains the line this train runs on.
 	Line Line
+	// LineName contains the display name for the line. For example, the [Line] may be Amtrak, but [LineName] may contain "Acela Express".
+	LineName string
 	// TrainId contains the train's number.
 	TrainId string
 	// ConnectingTrainId contains the connecting train's number. Used for Long Branch connections to Bayhead.
