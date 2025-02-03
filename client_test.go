@@ -238,7 +238,7 @@ func TestGetStationMsgAllStationsAndLines(t *testing.T) {
 					{Code: "NY", Name: "New York Penn Station", ShortName: "New York"},
 				},
 				LineScope: []raildata.Line{
-					{Code: "MC", Name: "Montclair-Boonton Line", Abbreviation: "MOBO"},
+					raildata.Lines[1],
 				},
 			},
 			{
@@ -357,7 +357,7 @@ func TestGetStationSchedule(t *testing.T) {
 						DepartureTime:      time.Date(2025, time.January, 17, 0, 24, 45, 0, loc),
 						Destination:        "MSU",
 						DestinationStation: &raildata.Station{Code: "UV", Name: "Montclair State U", ShortName: "MSU"},
-						Line:               raildata.Line{Code: "MC", Name: "Montclair-Boonton Line", Abbreviation: "MOBO"},
+						Line:               raildata.Lines[1],
 						TrainId:            "6299",
 						StationPosition:    raildata.StationPositions[1],
 						Direction:          raildata.DirectionWestbound,
@@ -368,7 +368,7 @@ func TestGetStationSchedule(t *testing.T) {
 						DepartureTime:      time.Date(2025, time.January, 17, 21, 19, 0, 0, loc),
 						Destination:        "New York -SEC",
 						DestinationStation: &raildata.Station{Code: "NY", Name: "New York Penn Station", ShortName: "New York"},
-						Line:               raildata.Line{Code: "MC", Name: "Montclair-Boonton Line", Abbreviation: "MOBO"},
+						Line:               raildata.Lines[1],
 						TrainId:            "6274",
 						StationPosition:    raildata.StationPositions[0],
 						Direction:          raildata.DirectionEastbound,
@@ -537,7 +537,7 @@ func TestGetTrainSchedule(t *testing.T) {
 				DepartureTime:   time.Date(2025, time.January, 17, 21, 0, 0, 0, loc),
 				Destination:     "Philadelphia ✈",
 				Track:           ptr("9"),
-				Line:            raildata.Line{Code: "AM", Name: "Amtrak", Abbreviation: "AMTK"},
+				Line:            raildata.Lines[12],
 				LineName:        "Acela Express",
 				TrainId:         "A639",
 				Status:          ptr("BOARDING"),
@@ -564,7 +564,7 @@ func TestGetTrainSchedule(t *testing.T) {
 				DepartureTime:   time.Date(2025, time.January, 17, 21, 6, 0, 0, loc),
 				Destination:     "Trenton -SEC ✈",
 				Track:           ptr("3"),
-				Line:            raildata.Line{Code: "NE", Name: "Northeast Corridor Line", Abbreviation: "NEC"},
+				Line:            raildata.Lines[6],
 				LineName:        "Northeast Corrdr",
 				TrainId:         "3887",
 				Status:          ptr("BOARDING"),
@@ -708,7 +708,7 @@ func TestGetTrainSchedule19Rec(t *testing.T) {
 			{
 				DepartureTime:   time.Date(2025, time.January, 17, 21, 35, 0, 0, loc),
 				Destination:     "Trenton -SEC ✈",
-				Line:            raildata.Line{Code: "NE", Name: "Northeast Corridor Line", Abbreviation: "NEC"},
+				Line:            raildata.Lines[6],
 				LineName:        "Northeast Corrdr",
 				TrainId:         "3889",
 				Delay:           ptr(-60 * time.Second),
@@ -720,7 +720,7 @@ func TestGetTrainSchedule19Rec(t *testing.T) {
 			{
 				DepartureTime:   time.Date(2025, time.January, 17, 22, 7, 0, 0, loc),
 				Destination:     "Jersey Avenue -SEC ✈",
-				Line:            raildata.Line{Code: "NE", Name: "Northeast Corridor Line", Abbreviation: "NEC"},
+				Line:            raildata.Lines[6],
 				LineName:        "Northeast Corrdr",
 				TrainId:         "3737",
 				Delay:           ptr(-60 * time.Second),
@@ -840,7 +840,7 @@ func TestGetTrainStopList(t *testing.T) {
 	require.NoError(t, err)
 	expected := &raildata.GetTrainStopListResponse{
 		TrainId:            "3737",
-		Line:               raildata.Line{Code: "NE", Name: "Northeast Corridor Line", Abbreviation: "NEC"},
+		Line:               raildata.Lines[6],
 		Color:              raildata.ColorSet{Background: color(t, "#F7505E"), Foreground: color(t, "#FFFFFF"), Shadow: color(t, "#000000")},
 		Destination:        "Jersey Avenue",
 		DestinationStation: &raildata.Station{Code: "JA", Name: "Jersey Avenue", ShortName: "Jersey Ave."},
@@ -852,11 +852,11 @@ func TestGetTrainStopList(t *testing.T) {
 				DepartureTime: ptr(time.Date(2025, time.January, 17, 22, 7, 0, 0, loc)),
 				StopLines: []raildata.StopLine{
 					{
-						Line:  raildata.Line{Code: "GS", Name: "Gladstone Branch", Abbreviation: "M&E"},
+						Line:  raildata.Lines[5],
 						Color: color(t, "#A1D5AE"),
 					},
 					{
-						Line:  raildata.Line{Code: "MC", Name: "Montclair-Boonton Line", Abbreviation: "MOBO"},
+						Line:  raildata.Lines[1],
 						Color: color(t, "#C36366"),
 					},
 				},
@@ -932,7 +932,7 @@ func TestGetVehicleData(t *testing.T) {
 		Vehicles: []raildata.VehicleData{
 			{
 				TrainId:        "65",
-				Line:           raildata.Line{Code: "BC", Name: "Bergen County Line", Abbreviation: "BERG"},
+				Line:           raildata.Lines[2],
 				Direction:      raildata.DirectionWestbound,
 				TrackCircuitId: "OV-7112TK",
 				LastUpdated:    time.Date(2025, time.January, 17, 21, 49, 33, 0, loc),
@@ -943,7 +943,7 @@ func TestGetVehicleData(t *testing.T) {
 			},
 			{
 				TrainId:        "68",
-				Line:           raildata.Line{Code: "BC", Name: "Bergen County Line", Abbreviation: "BERG"},
+				Line:           raildata.Lines[2],
 				Direction:      raildata.DirectionEastbound,
 				TrackCircuitId: "HO-7021TK",
 				LastUpdated:    time.Date(2025, time.January, 17, 21, 49, 19, 0, loc),

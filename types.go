@@ -422,6 +422,15 @@ func ParseHtmlColor(s string) (Color, error) {
 	return Color{rgb: [3]byte(rgb)}, nil
 }
 
+// MustParseHtmlColor parses the HTML color specification or panics if there was an error.
+func MustParseHtmlColor(s string) Color {
+	color, err := ParseHtmlColor(s)
+	if err != nil {
+		panic(fmt.Sprintf("could not parse color %s: %s", s, err.Error()))
+	}
+	return color
+}
+
 // Html returns an HTML color specification for this color.
 func (c Color) Html() string {
 	dst := make([]byte, 1, 7)

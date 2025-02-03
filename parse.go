@@ -430,11 +430,7 @@ func decodeLineScope(s string) []Line {
 	scope := decodeScope(s)
 	var out []Line
 	for _, lineName := range scope {
-		if line, found := linesByName[lineName]; found {
-			out = append(out, *line)
-		} else if line, found := linesByAbbreviation[lineName]; found {
-			out = append(out, *line)
-		}
+		out = append(out, *FindLine().WithName(lineName).SearchOrSynthesize())
 	}
 	return out
 }

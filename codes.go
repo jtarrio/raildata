@@ -1,6 +1,9 @@
 package raildata
 
-import "fmt"
+import (
+	"fmt"
+	"strings"
+)
 
 // TrainIdPrefix contains the code and the meaning of a special train number prefix.
 type TrainIdPrefix struct {
@@ -342,25 +345,30 @@ type Line struct {
 	Name string
 	// Abbreviation contains a 3-5 letter abbreviation of the line's name.
 	Abbreviation string
+	// Color contains the color for this line.
+	Color Color
+	// OtherAbbrs contains a list with alternative abbreviations for this line.
+	OtherAbbrs []string
+	// OtherNames contains a list with alternative names for this line.
+	OtherNames []string
 }
 
 // Lines contains a list of known lines.
 var Lines = []Line{
-	{Code: "AM", Name: "Amtrak", Abbreviation: "AMTK"},
-	{Code: "AC", Name: "Atlantic City Line", Abbreviation: "ACRL"},
-	{Code: "BC", Name: "Bergen County Line", Abbreviation: "BERG"},
-	{Code: "SL", Name: "BetMGM Meadowlands", Abbreviation: "BMGM"},
-	{Code: "GS", Name: "Gladstone Branch", Abbreviation: "M&E"},
-	{Code: "ME", Name: "ME Line", Abbreviation: "M&E"},
-	{Code: "ML", Name: "Main Line", Abbreviation: "MAIN"},
-	{Code: "MC", Name: "Montclair-Boonton Line", Abbreviation: "MOBO"},
-	{Code: "ME", Name: "Morris & Essex Line", Abbreviation: "M&E"},
-	{Code: "NC", Name: "North Jersey Coast Line", Abbreviation: "NJCL"},
-	{Code: "NE", Name: "Northeast Corridor Line", Abbreviation: "NEC"},
-	{Code: "PV", Name: "Pascack Valley Line", Abbreviation: "PASC"},
-	{Code: "PR", Name: "Princeton Branch", Abbreviation: "PRIN"},
-	{Code: "RV", Name: "Raritan Valley Line", Abbreviation: "RARV"},
-	{Code: "SP", Name: "Septa", Abbreviation: "SEPTA"},
+	{Code: "AC", Name: "Atlantic City Line", Abbreviation: "ACRL", Color: MustParseHtmlColor("#075AAA"), OtherAbbrs: []string{"ATLC"}, OtherNames: []string{"Atlantic City Rail Line", "Atl. City Line"}},
+	{Code: "MC", Name: "Montclair-Boonton Line", Abbreviation: "MOBO", Color: MustParseHtmlColor("#E66859"), OtherAbbrs: []string{"BNTN", "BNTNM", "MNBTN"}, OtherNames: []string{"Montclair-Boonton"}},
+	{Code: "BC", Name: "Bergen County Line", Abbreviation: "BERG", Color: MustParseHtmlColor("#FFD411"), OtherAbbrs: []string{"MNBN"}, OtherNames: []string{"Main/Bergen County Line", "Bergen Co. Line"}},
+	{Code: "ML", Name: "Main Line", Abbreviation: "MAIN", Color: MustParseHtmlColor("#FFD411"), OtherAbbrs: []string{"MNBN"}, OtherNames: []string{"Port Jervis Line"}},
+	{Code: "ME", Name: "Morris & Essex Line", Abbreviation: "M&E", Color: MustParseHtmlColor("#08A652"), OtherAbbrs: []string{"MNE"}, OtherNames: []string{"Morristown Line"}},
+	{Code: "GS", Name: "Gladstone Branch", Abbreviation: "M&E", Color: MustParseHtmlColor("#A4C9AA"), OtherAbbrs: []string{"MNEG"}},
+	{Code: "NE", Name: "Northeast Corridor Line", Abbreviation: "NEC", Color: MustParseHtmlColor("#DD3439"), OtherNames: []string{"Northeast Corridor", "Northeast Corrdr"}},
+	{Code: "NC", Name: "North Jersey Coast Line", Abbreviation: "NJCL", Color: MustParseHtmlColor("#03A3DF"), OtherAbbrs: []string{"NJCLL"}, OtherNames: []string{"No Jersey Coast"}},
+	{Code: "PV", Name: "Pascack Valley Line", Abbreviation: "PASC", Color: MustParseHtmlColor("#94219A"), OtherNames: []string{"Pascack Valley"}},
+	{Code: "PR", Name: "Princeton Branch", Abbreviation: "PRIN", Color: MustParseHtmlColor("#DD3439"), OtherNames: []string{"Princeton Shuttle"}},
+	{Code: "RV", Name: "Raritan Valley Line", Abbreviation: "RARV", Color: MustParseHtmlColor("#F2A537"), OtherNames: []string{"Raritan Valley"}},
+	{Code: "SL", Name: "BetMGM Meadowlands", Abbreviation: "BMGM", Color: MustParseHtmlColor("#C1AA72")},
+	{Code: "AM", Name: "Amtrak", Abbreviation: "AMTK", Color: MustParseHtmlColor("#FFFF00")},
+	{Code: "SP", Name: "Septa", Abbreviation: "SEPTA", Color: MustParseHtmlColor("#1F4FA3")},
 }
 
 // FindLine returns an object that lets you find a line by code or name.
@@ -399,14 +407,25 @@ func FindLine() LineFinder {
 type LineFinder = Finder[Line, LineCode]
 
 var linesByCode = makeMap(Lines, func(l *Line) LineCode { return l.Code })
-var linesByName = makeMap(Lines, func(s *Line) string { return s.Name })
-var linesByAbbreviation = makeMap(Lines, func(s *Line) string { return s.Abbreviation })
+var linesByName = makeMmap(Lines, func(s *Line) []string { return append([]string{s.Name}, s.OtherNames...) })
+var linesByAbbreviation = makeMmap(Lines, func(s *Line) []string { return append([]string{s.Abbreviation}, s.OtherAbbrs...) })
 
-func makeMap[I any, K comparable](input []I, getKey func(*I) K) map[K]*I {
-	out := map[K]*I{}
+func makeMap[I any, C ~string](input []I, getKey func(*I) C) map[string]*I {
+	out := map[string]*I{}
 	for i := range input {
 		v := &input[i]
-		out[getKey(v)] = v
+		out[strings.ToLower(string(getKey(v)))] = v
+	}
+	return out
+}
+
+func makeMmap[I any, C ~string](input []I, getKeys func(*I) []C) map[string]*I {
+	out := map[string]*I{}
+	for i := range input {
+		v := &input[i]
+		for _, k := range getKeys(v) {
+			out[strings.ToLower(string(k))] = v
+		}
 	}
 	return out
 }

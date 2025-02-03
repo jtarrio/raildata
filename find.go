@@ -1,7 +1,11 @@
 package raildata
 
+import (
+	"strings"
+)
+
 // Finder is an interface to find objects of type T with codes of type C.
-type Finder[T any, C comparable] interface {
+type Finder[T any, C ~string] interface {
 	// Sets up to find an object with the given code.
 	WithCode(code C) Finder[T, C]
 	// Sets up to find an object with the given name.
@@ -14,8 +18,8 @@ type Finder[T any, C comparable] interface {
 	SearchOrSynthesize() *T
 }
 
-type finderImpl[T any, C comparable] struct {
-	byCode        map[C]*T
+type finderImpl[T any, C ~string] struct {
+	byCode        map[string]*T
 	byName        map[string]*T
 	byAbbr        map[string]*T
 	list          []T
@@ -37,19 +41,21 @@ func (f finderImpl[T, C]) WithName(name string) Finder[T, C] {
 
 func (f finderImpl[T, C]) Search() (*T, bool) {
 	if f.code != nil {
-		if item, found := f.byCode[*f.code]; found {
+		codeLc := strings.ToLower(string(*f.code))
+		if item, found := f.byCode[codeLc]; found {
 			return item, true
 		}
 	}
 	if f.name != nil {
-		if item, found := f.byName[*f.name]; found {
+		nameLc := strings.ToLower(*f.name)
+		if item, found := f.byName[nameLc]; found {
 			return item, true
 		}
-		if item, found := f.byAbbr[*f.name]; found {
+		if item, found := f.byAbbr[nameLc]; found {
 			return item, true
 		}
-		item, matchLen := fuzzyFind(*f.name, f.list, f.getCandidates)
-		if matchLen > 2 && matchLen >= len(*f.name)/4 {
+		item, matchLen := fuzzyFind(nameLc, f.list, f.getCandidates)
+		if matchLen > 2 && matchLen >= len(nameLc)/4 {
 			return item, true
 		}
 	}
@@ -69,6 +75,7 @@ func fuzzyFind[T any](input string, list []T, getCandidates func(*T) []string) (
 	strLen := 0
 	for i := range list {
 		for _, candidate := range getCandidates(&list[i]) {
+			candidate := strings.ToLower(candidate)
 			ml := fuzzyMatch(input, candidate)
 			if ml > matchLen || (ml == matchLen && len(candidate) < strLen) {
 				best = &list[i]
