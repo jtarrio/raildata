@@ -436,7 +436,7 @@ func (c Color) Html() string {
 	dst := make([]byte, 1, 7)
 	dst[0] = '#'
 	dst = hex.AppendEncode(dst, c.rgb[:])
-	return fmt.Sprintf("#%s%s%s", string(dst[0:2]), string(dst[2:4]), string(dst[4:6]))
+	return string(dst)
 }
 
 // RGB returns the red, green, and blue components of this color (from 0 to 255).
