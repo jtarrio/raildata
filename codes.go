@@ -330,8 +330,11 @@ func FindStation() StationFinder {
 // StationFinder is an object to find stations by code or name.
 type StationFinder = Finder[Station, StationCode]
 
+var stationAliases = map[StationCode][]string{
+	"NY": {"Penn Station New York"},
+}
 var stationsByCode = makeMap(Stations, func(s *Station) StationCode { return s.Code })
-var stationsByName = makeMap(Stations, func(s *Station) string { return s.Name })
+var stationsByName = makeMmap(Stations, func(s *Station) []string { return append([]string{s.Name}, stationAliases[s.Code]...) })
 var stationsByShortName = makeMap(Stations, func(s *Station) string { return s.ShortName })
 
 // LineCode is a 2-letter identifier for a line.
