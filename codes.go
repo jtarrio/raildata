@@ -331,7 +331,37 @@ func FindStation() StationFinder {
 type StationFinder = Finder[Station, StationCode]
 
 var stationAliases = map[StationCode][]string{
+	"AC": {"Atlantic City Terminal"},
+	"BA": {"B.W.I. Airport"},
+	"MC": {"Bay Street (Montclair)"},
+	"BF": {"Broadway"},
+	"CN": {"Convent"},
+	"ED": {"Edison Station"},
+	"FE": {"Manville-Finderne"},
+	"GK": {"Glen Rock (Boro Hall)"},
+	"RS": {"Glen Rock (Main Line)"},
+	"RM": {"Harriman Station"},
+	"UF": {"Ho-Ho-Kus"},
+	"MI": {"Middletown"},
+	"MD": {"Middletown, NY"},
+	"UV": {"Montclair State University"},
+	"MT": {"Mountain Sta."},
+	"ND": {"Newark Broad St.", "Newark Broad St"},
+	"NA": {"Newark Int'l Airport", "Newark Airport Railroad Station"},
 	"NY": {"Penn Station New York"},
+	"PN": {"Pennsauken Transit Center"},
+	"PH": {"Philadelphia 30th St.", "30th St. Phl."},
+	"PR": {"Princeton Station"},
+	"FZ": {"Radburn"},
+	"17": {"Route 17 Station", "Ramsey Route 17 Station"},
+	"CW": {"Salisbury Mills"},
+	"TS": {"Secaucus Junction", "Frank R Lautenberg Secaucus Lower Level"},
+	"SE": {"Secaucus Station", "Frank R Lautenberg Secaucus Upper Level"},
+	"TR": {"Trenton Station", "Trenton Transit Center"},
+	"US": {"Union Station"},
+	"WA": {"Walnut Street (Montclair)"},
+	"WT": {"Watsessing Avenue (Bloomfield)"},
+	"23": {"Wayne/Route 23 Transit Center [RR]"},
 }
 var stationsByCode = makeMap(Stations, func(s *Station) StationCode { return s.Code })
 var stationsByName = makeMmap(Stations, func(s *Station) []string { return append([]string{s.Name}, stationAliases[s.Code]...) })
@@ -350,25 +380,21 @@ type Line struct {
 	Abbreviation string
 	// Color contains the color for this line.
 	Color Color
-	// OtherAbbrs contains a list with alternative abbreviations for this line.
-	OtherAbbrs []string
-	// OtherNames contains a list with alternative names for this line.
-	OtherNames []string
 }
 
 // Lines contains a list of known lines.
 var Lines = []Line{
-	{Code: "AC", Name: "Atlantic City Line", Abbreviation: "ACRL", Color: MustParseHtmlColor("#075AAA"), OtherAbbrs: []string{"ATLC"}, OtherNames: []string{"Atlantic City Rail Line", "Atl. City Line"}},
-	{Code: "MC", Name: "Montclair-Boonton Line", Abbreviation: "MOBO", Color: MustParseHtmlColor("#E66859"), OtherAbbrs: []string{"BNTN", "BNTNM", "MNBTN"}, OtherNames: []string{"Montclair-Boonton"}},
-	{Code: "BC", Name: "Bergen County Line", Abbreviation: "BERG", Color: MustParseHtmlColor("#FFD411"), OtherAbbrs: []string{"MNBN"}, OtherNames: []string{"Main/Bergen County Line", "Bergen Co. Line"}},
-	{Code: "ML", Name: "Main Line", Abbreviation: "MAIN", Color: MustParseHtmlColor("#FFD411"), OtherAbbrs: []string{"MNBN"}, OtherNames: []string{"Port Jervis Line"}},
-	{Code: "ME", Name: "Morris & Essex Line", Abbreviation: "M&E", Color: MustParseHtmlColor("#08A652"), OtherAbbrs: []string{"MNE"}, OtherNames: []string{"Morristown Line"}},
-	{Code: "GS", Name: "Gladstone Branch", Abbreviation: "M&E", Color: MustParseHtmlColor("#A4C9AA"), OtherAbbrs: []string{"MNEG"}},
-	{Code: "NE", Name: "Northeast Corridor Line", Abbreviation: "NEC", Color: MustParseHtmlColor("#DD3439"), OtherNames: []string{"Northeast Corridor", "Northeast Corrdr"}},
-	{Code: "NC", Name: "North Jersey Coast Line", Abbreviation: "NJCL", Color: MustParseHtmlColor("#03A3DF"), OtherAbbrs: []string{"NJCLL"}, OtherNames: []string{"No Jersey Coast"}},
-	{Code: "PV", Name: "Pascack Valley Line", Abbreviation: "PASC", Color: MustParseHtmlColor("#94219A"), OtherNames: []string{"Pascack Valley"}},
-	{Code: "PR", Name: "Princeton Branch", Abbreviation: "PRIN", Color: MustParseHtmlColor("#DD3439"), OtherNames: []string{"Princeton Shuttle"}},
-	{Code: "RV", Name: "Raritan Valley Line", Abbreviation: "RARV", Color: MustParseHtmlColor("#F2A537"), OtherNames: []string{"Raritan Valley"}},
+	{Code: "AC", Name: "Atlantic City Line", Abbreviation: "ACRL", Color: MustParseHtmlColor("#075AAA")},
+	{Code: "MC", Name: "Montclair-Boonton Line", Abbreviation: "MOBO", Color: MustParseHtmlColor("#E66859")},
+	{Code: "BC", Name: "Bergen County Line", Abbreviation: "BERG", Color: MustParseHtmlColor("#FFD411")},
+	{Code: "ML", Name: "Main Line", Abbreviation: "MAIN", Color: MustParseHtmlColor("#FFD411")},
+	{Code: "ME", Name: "Morris & Essex Line", Abbreviation: "M&E", Color: MustParseHtmlColor("#08A652")},
+	{Code: "GS", Name: "Gladstone Branch", Abbreviation: "M&E", Color: MustParseHtmlColor("#A4C9AA")},
+	{Code: "NE", Name: "Northeast Corridor Line", Abbreviation: "NEC", Color: MustParseHtmlColor("#DD3439")},
+	{Code: "NC", Name: "North Jersey Coast Line", Abbreviation: "NJCL", Color: MustParseHtmlColor("#03A3DF")},
+	{Code: "PV", Name: "Pascack Valley Line", Abbreviation: "PASC", Color: MustParseHtmlColor("#94219A")},
+	{Code: "PR", Name: "Princeton Branch", Abbreviation: "PRIN", Color: MustParseHtmlColor("#DD3439")},
+	{Code: "RV", Name: "Raritan Valley Line", Abbreviation: "RARV", Color: MustParseHtmlColor("#F2A537")},
 	{Code: "SL", Name: "BetMGM Meadowlands", Abbreviation: "BMGM", Color: MustParseHtmlColor("#C1AA72")},
 	{Code: "AM", Name: "Amtrak", Abbreviation: "AMTK", Color: MustParseHtmlColor("#FFFF00")},
 	{Code: "SP", Name: "Septa", Abbreviation: "SEPTA", Color: MustParseHtmlColor("#1F4FA3")},
@@ -409,9 +435,30 @@ func FindLine() LineFinder {
 // LineFinder is an object to find lines by code or name.
 type LineFinder = Finder[Line, LineCode]
 
+var lineAbbreviationAliases = map[LineCode][]string{
+	"AC": {"ATLC"},
+	"MC": {"BNTN", "BNTNM", "MNBTN"},
+	"BC": {"MNBN"},
+	"ML": {"MNBN"},
+	"ME": {"MNE"},
+	"GS": {"MNEG"},
+	"NC": {"NJCLL"},
+}
+var lineAliases = map[LineCode][]string{
+	"AC": {"Atlantic City Rail Line", "Atl. City Line"},
+	"MC": {"Montclair-Boonton"},
+	"BC": {"Main/Bergen County Line", "Bergen Co. Line"},
+	"ML": {"Port Jervis Line"},
+	"ME": {"Morristown Line"},
+	"NE": {"Northeast Corridor", "Northeast Corrdr"},
+	"NC": {"No Jersey Coast"},
+	"PV": {"Pascack Valley"},
+	"PR": {"Princeton Shuttle"},
+	"RV": {"Raritan Valley"},
+}
 var linesByCode = makeMap(Lines, func(l *Line) LineCode { return l.Code })
-var linesByName = makeMmap(Lines, func(s *Line) []string { return append([]string{s.Name}, s.OtherNames...) })
-var linesByAbbreviation = makeMmap(Lines, func(s *Line) []string { return append([]string{s.Abbreviation}, s.OtherAbbrs...) })
+var linesByName = makeMmap(Lines, func(s *Line) []string { return append([]string{s.Name}, lineAliases[s.Code]...) })
+var linesByAbbreviation = makeMmap(Lines, func(s *Line) []string { return append([]string{s.Abbreviation}, lineAbbreviationAliases[s.Code]...) })
 
 func makeMap[I any, C ~string](input []I, getKey func(*I) C) map[string]*I {
 	out := map[string]*I{}
