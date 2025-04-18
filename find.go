@@ -15,7 +15,7 @@ type Finder[T any, C ~string] interface {
 	Search() (*T, bool)
 	// Searches for the object, returning either the found object, or a made-up
 	// object that was built from the search data.
-	SearchOrSynthesize() *T
+	SearchOrSynthesize() T
 }
 
 type finderImpl[T any, C ~string] struct {
@@ -24,7 +24,7 @@ type finderImpl[T any, C ~string] struct {
 	byAbbr        map[string]*T
 	list          []T
 	getCandidates func(s *T) []string
-	synthesize    func(code *C, name *string) *T
+	synthesize    func(code *C, name *string) T
 	code          *C
 	name          *string
 }
@@ -62,9 +62,9 @@ func (f finderImpl[T, C]) Search() (*T, bool) {
 	return nil, false
 }
 
-func (f finderImpl[T, C]) SearchOrSynthesize() *T {
+func (f finderImpl[T, C]) SearchOrSynthesize() T {
 	if item, found := f.Search(); found {
-		return item
+		return *item
 	}
 	return f.synthesize(f.code, f.name)
 }

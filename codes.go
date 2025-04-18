@@ -309,8 +309,8 @@ func FindStation() StationFinder {
 		byAbbr:        stationsByShortName,
 		list:          Stations,
 		getCandidates: func(s *Station) []string { return []string{s.Name, s.ShortName} },
-		synthesize: func(code *StationCode, name *string) *Station {
-			out := &Station{}
+		synthesize: func(code *StationCode, name *string) Station {
+			out := Station{}
 			if code == nil {
 				out.Code = "XX"
 			} else {
@@ -416,8 +416,8 @@ func FindLine() LineFinder {
 		byAbbr:        linesByAbbreviation,
 		list:          Lines,
 		getCandidates: func(s *Line) []string { return []string{s.Name, s.Abbreviation} },
-		synthesize: func(code *LineCode, name *string) *Line {
-			out := &Line{}
+		synthesize: func(code *LineCode, name *string) Line {
+			out := Line{}
 			if code == nil {
 				out.Code = "XX"
 			} else {

@@ -30,14 +30,14 @@ func ParseValidTokenResponse(input *api.ValidTokenResponse) (*IsValidTokenRespon
 
 func ParseGetStationsList(input []api.GetStations) (*GetStationListResponse, error) {
 	response := &GetStationListResponse{}
-	for _, item := range input {
-		response.Stations = append(response.Stations, *ParseGetStations(&item))
+	for i := range input {
+		response.Stations = append(response.Stations, ParseGetStations(&input[i]))
 	}
 	return response, nil
 }
 
-func ParseGetStations(input *api.GetStations) *Station {
-	stationEntry := &Station{
+func ParseGetStations(input *api.GetStations) Station {
+	stationEntry := Station{
 		Code:      StationCode(input.STATION_2CHAR),
 		Name:      input.STATIONNAME,
 		ShortName: input.STATION_14CHAR,
@@ -47,14 +47,14 @@ func ParseGetStations(input *api.GetStations) *Station {
 
 func ParseStationMsgsList(input []api.StationMsgs) *GetStationMsgResponse {
 	response := &GetStationMsgResponse{}
-	for _, item := range input {
-		response.Messages = append(response.Messages, *ParseStationMsgs(&item))
+	for i := range input {
+		response.Messages = append(response.Messages, ParseStationMsgs(&input[i]))
 	}
 	return response
 }
 
-func ParseStationMsgs(input *api.StationMsgs) *StationMsg {
-	stationMsg := &StationMsg{
+func ParseStationMsgs(input *api.StationMsgs) StationMsg {
+	stationMsg := StationMsg{
 		Type:         strToMsgType(input.MSG_TYPE),
 		Text:         input.MSG_TEXT,
 		PubDate:      *strToLocalTime(input.MSG_PUBDATE, msgDateTimeFormat),
@@ -69,29 +69,29 @@ func ParseStationMsgs(input *api.StationMsgs) *StationMsg {
 
 func ParseDailyStationInfoList(input []api.DailyStationInfo) (*GetStationScheduleResponse, error) {
 	response := &GetStationScheduleResponse{}
-	for _, item := range input {
-		response.Entries = append(response.Entries, *ParseDailyStationInfo(&item))
+	for i := range input {
+		response.Entries = append(response.Entries, ParseDailyStationInfo(&input[i]))
 	}
 	return response, nil
 }
 
-func ParseDailyStationInfo(input *api.DailyStationInfo) *StationSchedule {
-	stationSchedule := &StationSchedule{
+func ParseDailyStationInfo(input *api.DailyStationInfo) StationSchedule {
+	stationSchedule := StationSchedule{
 		Station: strToStation(input.STATION_2CHAR, input.STATIONNAME),
 	}
-	for _, item := range input.ITEMS {
-		stationSchedule.Entries = append(stationSchedule.Entries, *ParseDailyScheduleInfo(&item))
+	for i := range input.ITEMS {
+		stationSchedule.Entries = append(stationSchedule.Entries, ParseDailyScheduleInfo(&input.ITEMS[i]))
 	}
 	return stationSchedule
 }
 
-func ParseDailyScheduleInfo(input *api.DailyScheduleInfo) *ScheduleEntry {
+func ParseDailyScheduleInfo(input *api.DailyScheduleInfo) ScheduleEntry {
 	destination := strUnquote(input.DESTINATION)
-	scheduleEntry := &ScheduleEntry{
+	scheduleEntry := ScheduleEntry{
 		DepartureTime:      *strToLocalTime(input.SCHED_DEP_DATE, dateTimeFormat),
 		Destination:        destination,
 		DestinationStation: strToStation("", destination),
-		Line:               *strToLine("", input.LINE),
+		Line:               strToLine("", input.LINE),
 		TrainId:            input.TRAIN_ID,
 		ConnectingTrainId:  strToPtr(input.CONNECTING_TRAIN_ID),
 		StationPosition:    GetStationPosition(input.STATION_POSITION),
@@ -106,89 +106,89 @@ func ParseDailyScheduleInfo(input *api.DailyScheduleInfo) *ScheduleEntry {
 
 func ParseStationInfo(input *api.StationInfo) *GetTrainScheduleResponse {
 	response := &GetTrainScheduleResponse{
-		Station: *strToStation(input.STATION_2CHAR, input.STATIONNAME),
+		Station: strToStation(input.STATION_2CHAR, input.STATIONNAME),
 	}
-	for _, item := range input.STATIONMSGS {
-		response.Messages = append(response.Messages, *ParseStationMsgs(&item))
+	for i := range input.STATIONMSGS {
+		response.Messages = append(response.Messages, ParseStationMsgs(&input.STATIONMSGS[i]))
 	}
-	for _, item := range input.ITEMS {
-		response.Entries = append(response.Entries, *ParseScheduleInfo(&item, &response.Station))
+	for i := range input.ITEMS {
+		response.Entries = append(response.Entries, ParseScheduleInfo(&input.ITEMS[i], &response.Station))
 	}
 	return response
 }
 
-func ParseScheduleInfo(input *api.ScheduleInfo, station *Station) *TrainScheduleEntry {
+func ParseScheduleInfo(input *api.ScheduleInfo, station *Station) TrainScheduleEntry {
 	destination := strUnquote(input.DESTINATION)
-	scheduleEntry := &TrainScheduleEntry{
+	scheduleEntry := TrainScheduleEntry{
 		DepartureTime:     *strToLocalTime(input.SCHED_DEP_DATE, dateTimeFormat),
 		Destination:       destination,
 		Track:             strToTrackName(input.TRACK, station),
-		Line:              *strToLine(input.LINECODE, input.LINE),
+		Line:              strToLine(input.LINECODE, input.LINE),
 		LineName:          input.LINE,
 		TrainId:           input.TRAIN_ID,
 		ConnectingTrainId: strToPtr(input.CONNECTING_TRAIN_ID),
 		Status:            strToPtr(input.STATUS),
 		Delay:             strToDurationSeconds(input.SEC_LATE),
 		LastUpdated:       strToLocalTime(input.LAST_MODIFIED, dateTimeFormat),
-		Color:             *strsToColorSet(input.FORECOLOR, input.BACKCOLOR, input.SHADOWCOLOR),
+		Color:             strsToColorSet(input.FORECOLOR, input.BACKCOLOR, input.SHADOWCOLOR),
 		GpsLocation:       strsToLocation(input.GPSLONGITUDE, input.GPSLATITUDE),
 		GpsTime:           strToLocalTime(input.GPSTIME, dateTimeFormat),
 		StationPosition:   GetStationPosition(input.STATION_POSITION),
 		InlineMessage:     strToPtr(input.INLINEMSG),
 	}
-	for _, item := range input.CAPACITY {
-		scheduleEntry.Capacity = append(scheduleEntry.Capacity, *ParseCapacityList(&item))
+	for i := range input.CAPACITY {
+		scheduleEntry.Capacity = append(scheduleEntry.Capacity, ParseCapacityList(&input.CAPACITY[i]))
 	}
-	for _, item := range input.STOPS {
-		scheduleEntry.Stops = append(scheduleEntry.Stops, *ParseStopList(&item))
+	for i := range input.STOPS {
+		scheduleEntry.Stops = append(scheduleEntry.Stops, ParseStopList(&input.STOPS[i]))
 	}
 	return scheduleEntry
 }
 
-func ParseCapacityList(input *api.CapacityList) *TrainCapacity {
-	response := &TrainCapacity{
+func ParseCapacityList(input *api.CapacityList) TrainCapacity {
+	response := TrainCapacity{
 		Number:          input.VEHICLE_NO,
 		Location:        *strsToLocation(input.LONGITUDE, input.LATITUDE),
 		CreatedTime:     *strToLocalTime(input.CREATED_TIME, dateTimeFormat),
 		Type:            input.VEHICLE_TYPE,
-		CapacityPercent: *strToInt(input.CUR_PERCENTAGE),
-		CapacityColor:   *strToColor(input.CUR_CAPACITY_COLOR),
-		PassengerCount:  *strToInt(input.CUR_PASSENGER_COUNT),
+		CapacityPercent: strToInt(input.CUR_PERCENTAGE),
+		CapacityColor:   strToColor(input.CUR_CAPACITY_COLOR),
+		PassengerCount:  strToInt(input.CUR_PASSENGER_COUNT),
 	}
-	for _, item := range input.SECTIONS {
-		response.Sections = append(response.Sections, *ParseSectionList(&item))
+	for i := range input.SECTIONS {
+		response.Sections = append(response.Sections, ParseSectionList(&input.SECTIONS[i]))
 	}
 	return response
 }
 
-func ParseSectionList(input *api.SectionList) *TrainSection {
-	response := &TrainSection{
+func ParseSectionList(input *api.SectionList) TrainSection {
+	response := TrainSection{
 		Position:        strToSectionPosition(input.SECTION_POSITION),
-		CapacityPercent: *strToInt(input.CUR_PERCENTAGE),
-		CapacityColor:   *strToColor(input.CUR_CAPACITY_COLOR),
-		PassengerCount:  *strToInt(input.CUR_PASSENGER_COUNT),
+		CapacityPercent: strToInt(input.CUR_PERCENTAGE),
+		CapacityColor:   strToColor(input.CUR_CAPACITY_COLOR),
+		PassengerCount:  strToInt(input.CUR_PASSENGER_COUNT),
 	}
-	for _, item := range input.CARS {
-		response.Cars = append(response.Cars, *ParseCarList(&item))
+	for i := range input.CARS {
+		response.Cars = append(response.Cars, ParseCarList(&input.CARS[i]))
 	}
 	return response
 }
 
-func ParseCarList(input *api.CarList) *TrainCar {
-	response := &TrainCar{
+func ParseCarList(input *api.CarList) TrainCar {
+	response := TrainCar{
 		TrainId:         input.CAR_NO,
-		Position:        *strToInt(input.CAR_POSITION),
+		Position:        strToInt(input.CAR_POSITION),
 		Restroom:        input.CAR_REST,
-		CapacityPercent: *strToInt(input.CUR_PERCENTAGE),
-		CapacityColor:   *strToColor(input.CUR_CAPACITY_COLOR),
-		PassengerCount:  *strToInt(input.CUR_PASSENGER_COUNT),
+		CapacityPercent: strToInt(input.CUR_PERCENTAGE),
+		CapacityColor:   strToColor(input.CUR_CAPACITY_COLOR),
+		PassengerCount:  strToInt(input.CUR_PASSENGER_COUNT),
 	}
 	return response
 }
 
-func ParseStopList(input *api.StopList) *TrainStop {
-	response := &TrainStop{
-		Station:       *strToStation(input.STATION_2CHAR, input.STATIONNAME),
+func ParseStopList(input *api.StopList) TrainStop {
+	response := TrainStop{
+		Station:       strToStation(input.STATION_2CHAR, input.STATIONNAME),
 		ArrivalTime:   strToLocalTime(input.TIME, dateTimeFormat),
 		PickupOnly:    strToBool(input.PICKUP),
 		DropoffOnly:   strToBool(input.DROPOFF),
@@ -196,16 +196,16 @@ func ParseStopList(input *api.StopList) *TrainStop {
 		StopStatus:    strToPtr(input.STOP_STATUS),
 		DepartureTime: strToLocalTime(input.DEP_TIME, dateTimeFormat),
 	}
-	for _, item := range input.STOP_LINES {
-		response.StopLines = append(response.StopLines, *ParseStopLines(&item))
+	for i := range input.STOP_LINES {
+		response.StopLines = append(response.StopLines, ParseStopLines(&input.STOP_LINES[i]))
 	}
 	return response
 }
 
-func ParseStopLines(input *api.StopLines) *StopLine {
-	response := &StopLine{
-		Line:  *strToLine(input.LINE_CODE, input.LINE_NAME),
-		Color: *strToColor(input.LINE_COLOR),
+func ParseStopLines(input *api.StopLines) StopLine {
+	response := StopLine{
+		Line:  strToLine(input.LINE_CODE, input.LINE_NAME),
+		Color: strToColor(input.LINE_COLOR),
 	}
 	return response
 }
@@ -218,25 +218,25 @@ func ParseStops(input *api.Stops) *GetTrainStopListResponse {
 	destination := strUnquote(input.DESTINATION)
 	response := &GetTrainStopListResponse{
 		TrainId:            *trainidp,
-		Line:               *strToLine(input.LINECODE, ""),
-		Color:              *strsToColorSet(input.FORECOLOR, input.BACKCOLOR, input.SHADOWCOLOR),
+		Line:               strToLine(input.LINECODE, ""),
+		Color:              strsToColorSet(input.FORECOLOR, input.BACKCOLOR, input.SHADOWCOLOR),
 		Destination:        destination,
 		DestinationStation: strToStation("", destination),
 		TransferAt:         strToPtr(input.TRANSFERAT),
 	}
-	for _, item := range input.STOPS {
-		response.Stops = append(response.Stops, *ParseStopList(&item))
+	for i := range input.STOPS {
+		response.Stops = append(response.Stops, ParseStopList(&input.STOPS[i]))
 	}
-	for _, item := range input.CAPACITY {
-		response.Capacity = append(response.Capacity, *ParseCapacityList(&item))
+	for i := range input.CAPACITY {
+		response.Capacity = append(response.Capacity, ParseCapacityList(&input.CAPACITY[i]))
 	}
 	return response
 }
 
 func ParseVehicleDataInfoList(input []api.VehicleDataInfo) *GetVehicleDataResponse {
 	response := &GetVehicleDataResponse{}
-	for _, item := range input {
-		response.Vehicles = append(response.Vehicles, *ParseVehicleDataInfo(&item))
+	for i := range input {
+		response.Vehicles = append(response.Vehicles, *ParseVehicleDataInfo(&input[i]))
 	}
 	return response
 }
@@ -244,7 +244,7 @@ func ParseVehicleDataInfoList(input []api.VehicleDataInfo) *GetVehicleDataRespon
 func ParseVehicleDataInfo(input *api.VehicleDataInfo) *VehicleData {
 	response := &VehicleData{
 		TrainId:        input.ID,
-		Line:           *strToLine("", input.TRAIN_LINE),
+		Line:           strToLine("", input.TRAIN_LINE),
 		Direction:      strToDirection(input.DIRECTION),
 		TrackCircuitId: input.ICS_TRACK_CKT,
 		LastUpdated:    *strToLocalTime(input.LAST_MODIFIED, dateTimeFormat),
@@ -281,41 +281,34 @@ func strToFloat(s string) *float64 {
 	return &f
 }
 
-func strToInt(s string) *int {
+func strToInt(s string) int {
 	i, err := strconv.ParseInt(s, 10, 64)
 	if err != nil {
-		return nil
+		return 0
 	}
-	r := int(i)
-	return &r
+	return int(i)
 }
 
-func strToColor(s string) *Color {
+func strToColor(s string) Color {
 	p := strToPtr(s)
 	if p == nil {
-		return nil
+		return Color{}
 	}
 	c, err := ParseHtmlColor(*p)
 	if err != nil {
-		return nil
+		return Color{}
 	}
-	return &c
+	return c
 }
 
-func strsToColorSet(fg, bg, shadow string) *ColorSet {
+func strsToColorSet(fg, bg, shadow string) ColorSet {
 	fgc := strToColor(fg)
 	bgc := strToColor(bg)
 	shadowc := strToColor(shadow)
-	if fgc == nil || bgc == nil {
-		return nil
-	}
-	if shadowc == nil {
-		shadowc = &Color{}
-	}
-	return &ColorSet{
-		Foreground: *fgc,
-		Background: *bgc,
-		Shadow:     *shadowc,
+	return ColorSet{
+		Foreground: fgc,
+		Background: bgc,
+		Shadow:     shadowc,
 	}
 }
 
@@ -348,7 +341,7 @@ func strsToLocation(lon string, lat string) *Location {
 	}
 }
 
-func strToStation(code string, name string) *Station {
+func strToStation(code string, name string) Station {
 	fs := FindStation()
 	if codep := (*StationCode)(strToPtr(code)); codep != nil {
 		fs = fs.WithCode(*codep)
@@ -359,7 +352,7 @@ func strToStation(code string, name string) *Station {
 	return fs.SearchOrSynthesize()
 }
 
-func strToLine(code string, name string) *Line {
+func strToLine(code string, name string) Line {
 	fs := FindLine()
 	if codep := (*LineCode)(strToPtr(code)); codep != nil {
 		fs = fs.WithCode(*codep)
@@ -421,7 +414,7 @@ func decodeStationScope(s string) []Station {
 	scope := decodeScope(s)
 	var out []Station
 	for _, stationName := range scope {
-		out = append(out, *FindStation().WithName(stationName).SearchOrSynthesize())
+		out = append(out, FindStation().WithName(stationName).SearchOrSynthesize())
 	}
 	return out
 }
@@ -430,7 +423,7 @@ func decodeLineScope(s string) []Line {
 	scope := decodeScope(s)
 	var out []Line
 	for _, lineName := range scope {
-		out = append(out, *FindLine().WithName(lineName).SearchOrSynthesize())
+		out = append(out, FindLine().WithName(lineName).SearchOrSynthesize())
 	}
 	return out
 }

@@ -47,9 +47,7 @@ func getStationSchedule(ctx context.Context, station string) error {
 }
 
 func displayStationSchedule(sched *raildata.StationSchedule) {
-	if sched.Station != nil {
-		fmt.Printf("Station: %s\n", sched.Station.Name)
-	}
+	fmt.Printf("Station: %s\n", sched.Station.Name)
 	for i := range sched.Entries {
 		if i > 0 {
 			fmt.Println()

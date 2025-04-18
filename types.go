@@ -135,8 +135,8 @@ type GetTrainStopListResponse struct {
 	Color ColorSet
 	// Destination contains the destination name.
 	Destination string
-	// DestinationStation contains the destination station, if it could be determined from the destination name.
-	DestinationStation *Station
+	// DestinationStation contains the destination station.
+	DestinationStation Station
 	// TransferAt contains the name of a transfer station. Used for Long Branch connections to Bayhead.
 	TransferAt *string
 	// Stops contains the list of stops for this train.
@@ -182,7 +182,7 @@ type StationMsg struct {
 // StationSchedule contains a station's 27-hour schedule.
 type StationSchedule struct {
 	// Station identifies the station this schedule belongs to.
-	Station *Station
+	Station Station
 	// Entries contains a list of schedule entries.
 	Entries []ScheduleEntry
 }
@@ -194,7 +194,7 @@ type ScheduleEntry struct {
 	// Destination contains the destination name.
 	Destination string
 	// DestinationStation contains the destination station, if it could be determined from the destination name.
-	DestinationStation *Station
+	DestinationStation Station
 	// Line contains the line this train runs on.
 	Line Line
 	// TrainId contains the train's number.
@@ -348,7 +348,7 @@ type VehicleData struct {
 	// Delay contains the train's current delay.
 	Delay *time.Duration
 	// NextStop contains the train's next stop.
-	NextStop *Station
+	NextStop Station
 	// Location contains the train's GPS location.
 	Location *Location
 }

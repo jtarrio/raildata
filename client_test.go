@@ -351,12 +351,12 @@ func TestGetStationSchedule(t *testing.T) {
 	expected := &raildata.GetStationScheduleResponse{
 		Entries: []raildata.StationSchedule{
 			{
-				Station: &raildata.Station{Code: "UM", Name: "Upper Montclair", ShortName: "Upp. Montclair"},
+				Station: raildata.Station{Code: "UM", Name: "Upper Montclair", ShortName: "Upp. Montclair"},
 				Entries: []raildata.ScheduleEntry{
 					{
 						DepartureTime:      time.Date(2025, time.January, 17, 0, 24, 45, 0, loc),
 						Destination:        "MSU",
-						DestinationStation: &raildata.Station{Code: "UV", Name: "Montclair State U", ShortName: "MSU"},
+						DestinationStation: raildata.Station{Code: "UV", Name: "Montclair State U", ShortName: "MSU"},
 						Line:               raildata.Lines[1],
 						TrainId:            "6299",
 						StationPosition:    raildata.StationPositions[1],
@@ -367,7 +367,7 @@ func TestGetStationSchedule(t *testing.T) {
 					{
 						DepartureTime:      time.Date(2025, time.January, 17, 21, 19, 0, 0, loc),
 						Destination:        "New York -SEC",
-						DestinationStation: &raildata.Station{Code: "NY", Name: "New York Penn Station", ShortName: "New York"},
+						DestinationStation: raildata.Station{Code: "NY", Name: "New York Penn Station", ShortName: "New York"},
 						Line:               raildata.Lines[1],
 						TrainId:            "6274",
 						StationPosition:    raildata.StationPositions[0],
@@ -843,7 +843,7 @@ func TestGetTrainStopList(t *testing.T) {
 		Line:               raildata.Lines[6],
 		Color:              raildata.ColorSet{Background: color(t, "#F7505E"), Foreground: color(t, "#FFFFFF"), Shadow: color(t, "#000000")},
 		Destination:        "Jersey Avenue",
-		DestinationStation: &raildata.Station{Code: "JA", Name: "Jersey Avenue", ShortName: "Jersey Ave."},
+		DestinationStation: raildata.Station{Code: "JA", Name: "Jersey Avenue", ShortName: "Jersey Ave."},
 		Stops: []raildata.TrainStop{
 			{
 				Station:       raildata.Station{Code: "NY", Name: "New York Penn Station", ShortName: "New York"},
@@ -938,7 +938,7 @@ func TestGetVehicleData(t *testing.T) {
 				LastUpdated:    time.Date(2025, time.January, 17, 21, 49, 33, 0, loc),
 				DepartureTime:  time.Date(2025, time.January, 17, 21, 52, 0, 0, loc),
 				Delay:          ptr(98 * time.Second),
-				NextStop:       &raildata.Station{Code: "OS", Name: "Otisville", ShortName: "Otisville"},
+				NextStop:       raildata.Station{Code: "OS", Name: "Otisville", ShortName: "Otisville"},
 				Location:       &raildata.Location{Longitude: -74.529233, Latitude: 41.471769},
 			},
 			{
@@ -949,7 +949,7 @@ func TestGetVehicleData(t *testing.T) {
 				LastUpdated:    time.Date(2025, time.January, 17, 21, 49, 19, 0, loc),
 				DepartureTime:  time.Date(2025, time.January, 17, 21, 57, 0, 0, loc),
 				Delay:          ptr(-60 * time.Second),
-				NextStop:       &raildata.Station{Code: "MD", Name: "Middletown NY", ShortName: "Middletown NY"},
+				NextStop:       raildata.Station{Code: "MD", Name: "Middletown NY", ShortName: "Middletown NY"},
 				Location:       &raildata.Location{Longitude: -74.370446, Latitude: 41.457426},
 			},
 		},

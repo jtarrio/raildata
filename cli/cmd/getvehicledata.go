@@ -46,9 +46,7 @@ func getVehicleData(ctx context.Context) error {
 		if veh.Location != nil {
 			fmt.Printf("Last position: %f,%f\n", veh.Location.Latitude, veh.Location.Longitude)
 		}
-		if veh.NextStop != nil {
-			fmt.Printf("Next stop: %s\n", veh.NextStop.Name)
-		}
+		fmt.Printf("Next stop: %s\n", veh.NextStop.Name)
 		fmt.Printf("Departing at %s\n", veh.DepartureTime.Format(time.RFC1123))
 
 	}
