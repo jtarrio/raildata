@@ -57,7 +57,7 @@ func TestFindStationWithName(t *testing.T) {
 }
 
 func TestFindStationOrSynthesize(t *testing.T) {
-	expected := &raildata.Station{
+	expected := raildata.Station{
 		Code:      "XY",
 		Name:      "Unknown XY",
 		ShortName: "Unknown XY",
@@ -65,7 +65,7 @@ func TestFindStationOrSynthesize(t *testing.T) {
 	station := raildata.FindStation().WithCode("XY").SearchOrSynthesize()
 	assert.Equal(t, expected, station)
 
-	expected = &raildata.Station{
+	expected = raildata.Station{
 		Code:      "XY",
 		Name:      "12345678901234567890",
 		ShortName: "12345678901234",
@@ -73,7 +73,7 @@ func TestFindStationOrSynthesize(t *testing.T) {
 	station = raildata.FindStation().WithCode("XY").WithName("12345678901234567890").SearchOrSynthesize()
 	assert.Equal(t, expected, station)
 
-	expected = &raildata.Station{
+	expected = raildata.Station{
 		Code:      "XX",
 		Name:      "12345678901234567890",
 		ShortName: "12345678901234",
@@ -118,7 +118,7 @@ func TestFindLineWithName(t *testing.T) {
 }
 
 func TestFindLineOrSynthesize(t *testing.T) {
-	expected := &raildata.Line{
+	expected := raildata.Line{
 		Code:         "XY",
 		Name:         "Unknown XY",
 		Abbreviation: "XXXY",
@@ -126,7 +126,7 @@ func TestFindLineOrSynthesize(t *testing.T) {
 	line := raildata.FindLine().WithCode("XY").SearchOrSynthesize()
 	assert.Equal(t, expected, line)
 
-	expected = &raildata.Line{
+	expected = raildata.Line{
 		Code:         "XY",
 		Name:         "12345678901234567890",
 		Abbreviation: "XXXY",
@@ -134,7 +134,7 @@ func TestFindLineOrSynthesize(t *testing.T) {
 	line = raildata.FindLine().WithCode("XY").WithName("12345678901234567890").SearchOrSynthesize()
 	assert.Equal(t, expected, line)
 
-	expected = &raildata.Line{
+	expected = raildata.Line{
 		Code:         "XX",
 		Name:         "12345678901234567890",
 		Abbreviation: "XXXX",
