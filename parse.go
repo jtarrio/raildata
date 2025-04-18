@@ -147,10 +147,10 @@ func ParseScheduleInfo(input *api.ScheduleInfo, station *Station) *TrainSchedule
 
 func ParseCapacityList(input *api.CapacityList) *TrainCapacity {
 	response := &TrainCapacity{
-		Number:          *strToPtr(input.VEHICLE_NO),
+		Number:          input.VEHICLE_NO,
 		Location:        *strsToLocation(input.LONGITUDE, input.LATITUDE),
 		CreatedTime:     *strToLocalTime(input.CREATED_TIME, dateTimeFormat),
-		Type:            *strToPtr(input.VEHICLE_TYPE),
+		Type:            input.VEHICLE_TYPE,
 		CapacityPercent: *strToInt(input.CUR_PERCENTAGE),
 		CapacityColor:   *strToColor(input.CUR_CAPACITY_COLOR),
 		PassengerCount:  *strToInt(input.CUR_PASSENGER_COUNT),
@@ -176,7 +176,7 @@ func ParseSectionList(input *api.SectionList) *TrainSection {
 
 func ParseCarList(input *api.CarList) *TrainCar {
 	response := &TrainCar{
-		TrainId:         *strToPtr(input.CAR_NO),
+		TrainId:         input.CAR_NO,
 		Position:        *strToInt(input.CAR_POSITION),
 		Restroom:        input.CAR_REST,
 		CapacityPercent: *strToInt(input.CUR_PERCENTAGE),
